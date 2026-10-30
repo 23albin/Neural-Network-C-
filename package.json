@@ -1,0 +1,11 @@
+{
+  "name": "neuron-school",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Learn C++ and neural networks in small steps",
+  "dependencies": {
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/cli": "^6.1.2",
+    "@capacitor/core": "^6.1.2"
+  }
+}
