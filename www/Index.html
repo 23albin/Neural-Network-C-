@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Neuron School: learn C++ neural networks</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef3f6;--grid:#d5e0e7;--ink:#14243a;--mut:#5a6b80;--card:#fff;--line:#c4d2dc;--acc:#0b8f8c;--accT:#fff;--ok:#1f8f4e;--bad:#c2410c;--code:#0f1d2e;--codeT:#d6e4f2;--hi:#16324f;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1722;--grid:#16273a;--ink:#e6eef7;--mut:#8ea3ba;--card:#14222f;--line:#274057;--acc:#3cc7c2;--accT:#06201f;--ok:#4cc77f;--bad:#f08a52;--code:#08111a;--hi:#1b3a58}}
+:root[data-theme="dark"]{--bg:#0d1722;--grid:#16273a;--ink:#e6eef7;--mut:#8ea3ba;--card:#14222f;--line:#274057;--acc:#3cc7c2;--accT:#06201f;--ok:#4cc77f;--bad:#f08a52;--code:#08111a;--hi:#1b3a58}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;color:var(--ink);font-family:'Bricolage Grotesque',system-ui,sans-serif;line-height:1.5;min-height:100vh}
+main{max-width:560px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:2.1rem;font-weight:800;margin:8px 0 4px;letter-spacing:-.02em}
+h2{font-size:1.4rem;margin:0 0 8px;font-weight:800}
+p{margin:0 0 12px}.mut{color:var(--mut)}
+.bar{display:flex;gap:10px;align-items:center;margin:14px 0}
+.chip{background:var(--card);border:1.5px solid var(--line);border-radius:999px;padding:4px 12px;font-weight:600;font-size:.9rem}
+.prog{flex:1;height:8px;background:var(--line);border-radius:9px;overflow:hidden}.prog i{display:block;height:100%;background:var(--acc);transition:width .3s}
+.lesson{display:flex;gap:14px;align-items:center;width:100%;text-align:left;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:14px;margin:0 0 10px;color:inherit;font:inherit;cursor:pointer}
+.lesson:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.lesson b{display:block;font-size:1.05rem}.lesson span{color:var(--mut);font-size:.9rem}
+.badge{flex:none;width:44px;height:44px;border-radius:50%;border:2px solid var(--acc);display:grid;place-items:center;font-weight:800;color:var(--acc)}
+.done .badge{background:var(--acc);color:var(--accT)}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:18px;margin-bottom:14px}
+.btn{display:block;width:100%;background:var(--acc);color:var(--accT);border:0;border-radius:12px;padding:14px;font:inherit;font-weight:800;font-size:1rem;cursor:pointer}
+.btn[disabled]{opacity:.4}.ghost{background:none;border:0;color:var(--mut);font:inherit;cursor:pointer;padding:6px 0}
+.code{background:var(--code);color:var(--codeT);border-radius:12px;padding:8px 0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.82rem;overflow-x:auto;margin-bottom:12px}
+.ln{display:block;width:100%;text-align:left;background:none;border:0;border-left:4px solid transparent;color:inherit;font:inherit;padding:3px 12px;white-space:pre;cursor:pointer}
+.ln.on{background:var(--hi);border-left-color:var(--acc)}
+.why{border-left:4px solid var(--acc);padding:2px 0 2px 12px;margin-bottom:6px;min-height:3em}
+.opt{display:block;width:100%;text-align:left;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:12px;margin-bottom:8px;font:inherit;color:inherit;cursor:pointer}
+.opt.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 15%,var(--card))}.opt.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 15%,var(--card))}
+.sl{display:grid;grid-template-columns:70px 1fr 48px;gap:8px;align-items:center;margin:6px 0;font-family:'JetBrains Mono',monospace;font-size:.85rem}
+input[type=range]{width:100%;accent-color:var(--acc)}
+.meter{height:22px;background:var(--line);border-radius:8px;overflow:hidden;margin-top:10px}.meter i{display:block;height:100%;background:var(--acc);transition:width .15s}
+.fb{font-weight:600;margin:8px 0}.fb.ok{color:var(--ok)}.fb.no{color:var(--bad)}
+</style></head><body><main id="app"></main>
+<script>
+const L=[
+{n:"What is a neuron?",s:"Weights, bias and a sum",steps:[
+{t:"read",h:"A neuron is just maths",b:"A neuron takes numbers in, multiplies each by a <b>weight</b> (how much it matters), adds them up, then adds a <b>bias</b> (a built-in nudge). Learning means finding good weights."},
+{t:"neuron"},
+{t:"quiz",q:"If a weight is 0, what does that input do?",o:["Doubles the output","Is ignored by the neuron","Makes the output negative"],a:1,w:"Anything times 0 is 0, so that input adds nothing."}]},
+{n:"C++ building blocks",s:"vector, for loops, double",steps:[
+{t:"read",h:"Lists of numbers",b:"In C++ a <b>vector&lt;double&gt;</b> is a resizable list of decimals. Images, weights and outputs are all stored this way."},
+{t:"code",h:"Add up a list",c:[["vector<double> x = {1, 2, 3};","Make a list holding three decimal numbers."],["double sum = 0;","Create a running total, starting at zero."],["for (int i = 0; i < 3; i++)","Repeat with i being 0, then 1, then 2."],["    sum += x[i];","Add the i-th number to the total. x[0] is the first item."]]},
+{t:"quiz",q:"What does x[1] give you in the code above?",o:["1","2","3"],a:1,w:"C++ counts from 0, so x[1] is the second item: 2."}]},
+{n:"Activation functions",s:"ReLU and softmax",steps:[
+{t:"read",h:"Adding a bend",b:"Without an activation, stacked neurons collapse into one straight-line formula. <b>ReLU</b> keeps positives and turns negatives into 0. <b>Softmax</b> turns raw scores into probabilities that add up to 1."},
+{t:"code",h:"ReLU in one line",c:[["double relu(double s) {","Define a function that takes one decimal and returns one."],["    return s > 0 ? s : 0;","If s is positive give back s, otherwise give back 0."],["}","End of the function."]]},
+{t:"quiz",q:"What is relu(-4.5)?",o:["-4.5","0","4.5"],a:1,w:"Negative inputs become 0."}]},
+{n:"The forward pass",s:"From pixels to a guess",steps:[
+{t:"read",h:"Layer by layer",b:"The <b>forward pass</b> sends pixels through the hidden layer, then the output layer. The result is a probability for each answer, like 99% diagonal."},
+{t:"code",h:"One hidden neuron",c:[["double sum = b1[j];","Start with this neuron’s bias."],["for (int i = 0; i < INPUTS; i++)","Visit every input pixel."],["    sum += w1[j][i] * x[i];","Multiply the pixel by this neuron’s weight for it, and add to the sum."],["h[j] = sum > 0 ? sum : 0;","Apply ReLU and store the neuron’s result."]]},
+{t:"quiz",q:"Why do we loop over every pixel?",o:["Each pixel feeds into every hidden neuron","To sort the pixels","To delete dark pixels"],a:0,w:"Every neuron looks at the whole image, with its own weight for each pixel."}]},
+{n:"Learning from mistakes",s:"Loss and gradient descent",steps:[
+{t:"read",h:"Downhill steps",b:"The network guesses, we measure <b>how wrong</b> it was (the loss), then nudge each weight a small step in the direction that lowers the loss. The step size is the <b>learning rate</b>."},
+{t:"code",h:"One weight update",c:[["double error = guess - target;","How far off was the guess? Positive means too high."],["w -= LR * error * input;","Move the weight against the error. LR keeps the step small."]]},
+{t:"quiz",q:"What happens if the learning rate is far too big?",o:["Learning is perfect","Steps overshoot and training goes wrong","Nothing changes"],a:1,w:"Huge steps jump past the best weights, so the loss bounces or explodes."}]},
+{n:"Backpropagation",s:"Sharing the blame",steps:[
+{t:"read",h:"Passing errors backwards",b:"Output errors are sent <b>backwards</b> through the weights to work out how much each hidden neuron contributed. Neurons that were switched off by ReLU get no blame."},
+{t:"code",h:"Blame for a hidden neuron",c:[["for (int k = 0; k < CLASSES; k++)","Look at each output neuron."],["    d1[j] += w2[k][j] * d2[k];","Add that output’s error, scaled by how strongly neuron j feeds it."],["if (h[j] <= 0) d1[j] = 0;","If ReLU turned this neuron off, it gets no blame."]]},
+{t:"quiz",q:"Which file you already have uses this exact idea?",o:["neural_net.cpp, in the train() function","None","Only the main() function"],a:0,w:"train() computes d2 and d1, then updates w2 and w1. Try changing LR and HIDDEN there and watch accuracy."}]}];
+
+let S={done:[],xp:0};
+try{const r=localStorage.getItem("ns");if(r)S=JSON.parse(r)}catch(e){}
+const save=()=>{try{localStorage.setItem("ns",JSON.stringify(S))}catch(e){}};
+const $=document.getElementById("app");let cur=-1,si=0,answered=false;
+
+function home(){cur=-1;
+ const pct=Math.round(S.done.length/L.length*100);
+ $.innerHTML=`<h1>Neuron School</h1><p class="mut">Learn C++ and neural networks in small steps. Tap a lesson to start.</p>
+ <div class="bar"><span class="chip">${S.xp} XP</span><div class="prog"><i style="width:${pct}%"></i></div><span class="chip">${S.done.length}/${L.length}</span></div>`+
+ L.map((l,i)=>`<button class="lesson ${S.done.includes(i)?'done':''}" data-i="${i}"><div class="badge">${S.done.includes(i)?'✓':i+1}</div><div><b>${l.n}</b><span>${l.s}</span></div></button>`).join("");
+ $.querySelectorAll(".lesson").forEach(b=>b.onclick=()=>{cur=+b.dataset.i;si=0;step()});
+ window.scrollTo(0,0)}
+
+function step(){answered=false;const l=L[cur],st=l.steps[si];
+ const head=`<div class="bar"><button class="ghost" id="x">Close</button><div class="prog"><i style="width:${si/l.steps.length*100}%"></i></div></div>`;
+ let body="",ready=true;
+ if(st.t=="read")body=`<div class="card"><h2>${st.h}</h2><p>${st.b}</p></div>`;
+ if(st.t=="code")body=`<h2>${st.h}</h2><p class="mut">Tap a line to see what it does.</p><div class="code">${st.c.map((r,i)=>`<button class="ln ${i?'':'on'}" data-i="${i}">${r[0].replace(/</g,"&lt;")}</button>`).join("")}</div><div class="why" id="why">${st.c[0][1]}</div>`;
+ if(st.t=="neuron")body=`<div class="card"><h2>Try a neuron</h2><p class="mut">Inputs are fixed at 1.0 and 0.5. Drag the sliders and watch the output (after ReLU).</p>
+  <div class="sl"><span>weight 1</span><input type="range" id="w1" min="-2" max="2" step=".1" value="1"><b id="v1">1.0</b></div>
+  <div class="sl"><span>weight 2</span><input type="range" id="w2" min="-2" max="2" step=".1" value="-1"><b id="v2">-1.0</b></div>
+  <div class="sl"><span>bias</span><input type="range" id="b" min="-2" max="2" step=".1" value="0"><b id="vb">0.0</b></div>
+  <p id="calc" style="font-family:'JetBrains Mono',monospace;font-size:.85rem;margin:10px 0 0"></p><div class="meter"><i id="m"></i></div></div>`;
+ if(st.t=="quiz"){ready=false;body=`<h2>${st.q}</h2>`+st.o.map((o,i)=>`<button class="opt" data-i="${i}">${o}</button>`).join("")+`<div class="fb" id="fb"></div>`}
+ $.innerHTML=head+body+`<button class="btn" id="nx" ${ready?"":"disabled"}>${si==l.steps.length-1?"Finish lesson":"Continue"}</button>`;
+ document.getElementById("x").onclick=home;
+ document.getElementById("nx").onclick=next;
+ if(st.t=="code")$.querySelectorAll(".ln").forEach(b=>b.onclick=()=>{$.querySelectorAll(".ln").forEach(x=>x.classList.remove("on"));b.classList.add("on");document.getElementById("why").textContent=st.c[+b.dataset.i][1]});
+ if(st.t=="neuron"){const u=()=>{const a=+w1.value,b2=+w2.value,c=+b.value,s=a*1+b2*.5+c,o=Math.max(0,s);
+   v1.textContent=a.toFixed(1);v2.textContent=b2.toFixed(1);vb.textContent=c.toFixed(1);
+   calc.innerHTML=`sum = ${a.toFixed(1)}×1.0 + ${b2.toFixed(1)}×0.5 + ${c.toFixed(1)} = ${s.toFixed(2)}<br>output = ReLU(sum) = <b>${o.toFixed(2)}</b>`;m.style.width=Math.min(100,o/3*100)+"%"};
+   [w1,w2,b].forEach(e=>e.oninput=u);u()}
+ if(st.t=="quiz")$.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{if(answered)return;const ok=+b.dataset.i==st.a;
+   b.classList.add(ok?"right":"wrong");const fb=document.getElementById("fb");
+   if(ok){answered=true;S.xp+=10;save();fb.className="fb ok";fb.textContent="Correct, +10 XP. "+st.w;document.getElementById("nx").disabled=false}
+   else{fb.className="fb no";fb.textContent="Not quite. Try another answer."}});
+ window.scrollTo(0,0)}
+
+function next(){const l=L[cur];
+ if(si<l.steps.length-1){si++;step();return}
+ if(!S.done.includes(cur)){S.done.push(cur);S.xp+=20}save();
+ $.innerHTML=`<div class="card"><h2>Lesson complete</h2><p>You finished “${L[cur].n}” and earned XP. You have ${S.xp} XP in total.</p></div><button class="btn" id="h">Back to lessons</button>`;
+ document.getElementById("h").onclick=home}
+home();
+</script></body></html>
